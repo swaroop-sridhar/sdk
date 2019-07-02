@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Microsoft.Build.Framework;
-using System.IO;
+using Microsoft.NET.HostModel.AppHost;
 
 namespace Microsoft.NET.Build.Tasks
 {
@@ -28,13 +28,12 @@ namespace Microsoft.NET.Build.Tasks
 
         protected override void ExecuteCore()
         {
-            AppHost.Create(
+            HostWriter.CreateAppHost(
                 AppHostSourcePath,
                 AppHostDestinationPath,
                 AppBinaryName,
                 windowsGraphicalUserInterface : WindowsGraphicalUserInterface,
-                intermediateAssembly: IntermediateAssembly,
-                log: Log);
+                assemblyToCopyResorcesFrom: IntermediateAssembly);
         }
     }
 }

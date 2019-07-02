@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.NET.HostModel.AppHost;
+using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -25,7 +26,7 @@ namespace Microsoft.NET.Build.Tasks.UnitTests
                 string destinationFilePath = Path.Combine(testDirectory.Path, "DestinationAppHost.exe.mock");
                 string appBinaryFilePath = "Test/App/Binary/Path.dll";
 
-                AppHost.Create(
+                HostWriter.CreateAppHost(
                     sourceAppHostMock,
                     destinationFilePath,
                     appBinaryFilePath);
@@ -59,7 +60,7 @@ namespace Microsoft.NET.Build.Tasks.UnitTests
                 string appBinaryFilePath = "Test/App/Binary/Path.dll";
 
                 Assert.Throws<BuildErrorException>(() =>
-                    AppHost.Create(
+                    HostWriter.CreateAppHost(
                         sourceAppHostMock,
                         destinationFilePath,
                         appBinaryFilePath))
@@ -81,7 +82,7 @@ namespace Microsoft.NET.Build.Tasks.UnitTests
                 string appBinaryFilePath = new string('a', 1024 + 5);
 
                 Assert.Throws<BuildErrorException>(() =>
-                    AppHost.Create(
+                    HostWriter.CreateAppHost(
                         sourceAppHostMock,
                         destinationFilePath,
                         appBinaryFilePath))
@@ -100,7 +101,7 @@ namespace Microsoft.NET.Build.Tasks.UnitTests
                 string destinationFilePath = Path.Combine(testDirectory.Path, "DestinationAppHost.exe.mock");
                 string appBinaryFilePath = "Test/App/Binary/Path.dll";
 
-                AppHost.Create(
+                HostWriter.CreateAppHost(
                     sourceAppHostMock,
                     destinationFilePath,
                     appBinaryFilePath,
@@ -128,7 +129,7 @@ namespace Microsoft.NET.Build.Tasks.UnitTests
                 string appBinaryFilePath = "Test/App/Binary/Path.dll";
 
                 Assert.Throws<BuildErrorException>(() =>
-                    AppHost.Create(
+                    HostWriter.CreateAppHost(
                         sourceAppHostMock,
                         destinationFilePath,
                         appBinaryFilePath,
@@ -153,7 +154,7 @@ namespace Microsoft.NET.Build.Tasks.UnitTests
                 string appBinaryFilePath = "Test/App/Binary/Path.dll";
 
                 Assert.Throws<BuildErrorException>(() =>
-                    AppHost.Create(
+                    HostWriter.CreateAppHost(
                         sourceAppHostMock,
                         destinationFilePath,
                         appBinaryFilePath,

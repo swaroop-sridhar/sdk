@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using Microsoft.NET.HostModel.AppHost;
 using NuGet.Frameworks;
 using NuGet.ProjectModel;
 using NuGet.Versioning;
@@ -102,7 +103,7 @@ namespace Microsoft.NET.Build.Tasks
                         "any",
                         ToolEntryPoint});
 
-                AppHost.Create(
+                HostWriter.CreateAppHost(
                     resolvedApphostAssetPath,
                     appHostDestinationFilePath,
                     appBinaryFilePath
