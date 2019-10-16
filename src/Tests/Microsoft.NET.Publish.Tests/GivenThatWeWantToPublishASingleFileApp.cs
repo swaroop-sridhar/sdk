@@ -27,6 +27,8 @@ namespace Microsoft.NET.Publish.Tests
         private const string DontUseAppHost = "/p:UseAppHost=false";
         private const string ReadyToRun = "/p:PublishReadyToRun=true";
         private const string ReadyToRunWithSymbols = "/p:PublishReadyToRunEmitSymbols=true";
+        private const string UseAppHost = "/p:UseAppHost=true";
+        private const string OutputExe = "/p:OutputType=exe";
 
         private readonly string RuntimeIdentifier = $"/p:RuntimeIdentifier={RuntimeEnvironment.GetRuntimeIdentifier()}";
         private readonly string SingleFile = $"{TestProjectName}{Constants.ExeSuffix}";
@@ -95,6 +97,50 @@ namespace Microsoft.NET.Publish.Tests
                 .Fail()
                 .And
                 .HaveStdOutContaining(Strings.CannotHaveSingleFileWithoutExecutable);
+        }
+
+        [Fact]
+        public void It_errors_when_targetting_netstandard()
+        {
+            var testProject = new TestProject()
+            {
+                Name = "SingleFileClassLib",
+                TargetFrameworks = "netstandard2.0",
+                IsSdkProject = true,
+                IsExe = false,
+            };
+
+            var testAsset = _testAssetsManager.CreateTestProject(testProject);
+
+            var publishCommand = new PublishCommand(Log, Path.Combine(testAsset.TestRoot, testProject.Name));
+
+            publishCommand.Execute(PublishSingleFile, RuntimeIdentifier, UseAppHost, OutputExe)
+                .Should()
+                .Fail()
+                .And
+                .HaveStdOutContaining(Strings.CanOnlyHaveSingleFileWithNetCoreApp);
+        }
+
+        [Fact]
+        public void It_errors_when_targetting_netcoreapp_2_x()
+        {
+            var testProject = new TestProject()
+            {
+                Name = "SingleFileConsole",
+                TargetFrameworks = "netcoreapp2.2",
+                IsSdkProject = true,
+                IsExe = true,
+            };
+
+            var testAsset = _testAssetsManager.CreateTestProject(testProject);
+
+            var publishCommand = new PublishCommand(Log, Path.Combine(testAsset.TestRoot, testProject.Name));
+
+            publishCommand.Execute(PublishSingleFile, RuntimeIdentifier, UseAppHost, OutputExe)
+                .Should()
+                .Fail()
+                .And
+                .HaveStdOutContaining(Strings.PublishSingleFileRequiresVersion30);
         }
 
         [Fact]
