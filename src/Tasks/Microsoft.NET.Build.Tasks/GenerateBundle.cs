@@ -3,7 +3,7 @@
 
 using Microsoft.Build.Framework;
 using Microsoft.NET.HostModel.Bundle;
-using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Microsoft.NET.Build.Tasks
@@ -21,6 +21,9 @@ namespace Microsoft.NET.Build.Tasks
         [Required]
         public bool ShowDiagnosticOutput { get; set; }
 
+        [Output]
+        public ITaskItem[] ExcludedFiles { get; set; }
+
         protected override void ExecuteCore()
         {
             var bundler = new Bundler(AppHostName, OutputDir, IncludeSymbols, ShowDiagnosticOutput);
@@ -33,6 +36,8 @@ namespace Microsoft.NET.Build.Tasks
             }
 
             bundler.GenerateBundle(fileSpec);
+
+            //ExcludedFiles = FilesToBundle.Where(file => excludeSpec.Any(excludedFile => file.ItemSpec == excludedFile.SourcePath)).ToArray();
         }
     }
 }
