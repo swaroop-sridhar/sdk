@@ -466,7 +466,6 @@ Copyright (c) .NET Foundation. All rights reserved.
   <PropertyGroup>
     <CopyBuildOutputToPublishDirectory Condition="'$(CopyBuildOutputToPublishDirectory)'==''">true</CopyBuildOutputToPublishDirectory>
     <CopyOutputSymbolsToPublishDirectory Condition="'$(CopyOutputSymbolsToPublishDirectory)'==''">true</CopyOutputSymbolsToPublishDirectory>
-    <IncludeSymbolsInSingleFile Condition="'$(IncludeSymbolsInSingleFile)' == ''">false</IncludeSymbolsInSingleFile>
   </PropertyGroup>
 
   <!--
@@ -959,12 +958,23 @@ Copyright (c) .NET Foundation. All rights reserved.
           Inputs="@(_FilesToBundle)"
           Outputs="$(PublishedSingleFilePath)">
 
+    <PropertyGroup>
+      <TraceSingleFileBundler Condition="'$(TraceSingleFileBundler)' == ''">false</TraceSingleFileBundler>
+      <IncludeSymbolsInSingleFile Condition="'$(IncludeSymbolsInSingleFile)' == ''">false</IncludeSymbolsInSingleFile>
+      <IncludeNativeLibrariesInSingleFile Condition="'$(IncludeSymbolsInSingleFile)' == ''">false</IncludeNativeLibrariesInSingleFile>
+      <IncludeAllContentInSingleFile Condition="'$(IncludeSymbolsInSingleFile)' == ''">false</IncludeAllContentInSingleFile>
+    </PropertyGroup>
     <GenerateBundle FilesToBundle="@(_FilesToBundle)"
                     AppHostName="$(PublishedSingleFileName)"
                     IncludeSymbols="$(IncludeSymbolsInSingleFile)"
+                    IncludeNativeLibraries="$(IncludeNativeLibrariesInSingleFile)"
+                    IncludeAllContent="$(IncludeAllContentInSingleFile)"
                     OutputDir="$(PublishDir)"
-                    ShowDiagnosticOutput="false"/>
-
+                    TargetFrameworkVersion="$(_TargetFrameworkVersionWithoutV)"
+                    RuntimeIdentifier="$(RuntimeIdentifier)"
+                    ShowDiagnosticOutput="$(TraceSingleFileBundler)">
+      <Output TaskParameter="ExcludedFiles" ItemName="_FilesExcludedFromBundle"/>
+    </GenerateBundle>
   </Target>
 
   <!--

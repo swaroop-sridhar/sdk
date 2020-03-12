@@ -3,8 +3,10 @@
 
 using Microsoft.Build.Framework;
 using Microsoft.NET.HostModel.Bundle;
-using System.Linq;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.NET.Build.Tasks
 {
@@ -17,7 +19,15 @@ namespace Microsoft.NET.Build.Tasks
         [Required]
         public bool IncludeSymbols { get; set; }
         [Required]
+        public bool IncludeNativeLibraries { get; set; }
+        [Required]
+        public bool IncludeAllContent { get; set; }
+        [Required]
         public string OutputDir { get; set; }
+        [Required]
+        public string TargetFrameworkVersion { get; set; }
+        [Required]
+        public string RuntimeIdentifier { get; set; }
         [Required]
         public bool ShowDiagnosticOutput { get; set; }
 
@@ -26,10 +36,17 @@ namespace Microsoft.NET.Build.Tasks
 
         protected override void ExecuteCore()
         {
-            BundleOptions options = BundleOptions.BundleAllContent | (IncludeSymbols ? BundleOptions.BundleSymbolFiles : BundleOptions.None);
-            var bundler = new Bundler(AppHostName, OutputDir, options, diagnosticOutput: ShowDiagnosticOutput);
-            var fileSpec = new List<FileSpec>(FilesToBundle.Length);
+            OSPlatform targetOS = RuntimeIdentifier.StartsWith("win") ? OSPlatform.Windows :
+                                  RuntimeIdentifier.StartsWith("osx") ? OSPlatform.Linux : OSPlatform.OSX;
 
+            BundleOptions options = BundleOptions.None;
+            options |= IncludeAllContent ? BundleOptions.BundleAllContent : BundleOptions.None;
+            options |= IncludeNativeLibraries ? BundleOptions.BundleNativeBinaries : BundleOptions.None;
+            options |= IncludeSymbols ? BundleOptions.BundleSymbolFiles : BundleOptions.None;
+
+            var bundler = new Bundler(AppHostName, OutputDir, options, targetOS, new Version(TargetFrameworkVersion), ShowDiagnosticOutput);
+
+            var fileSpec = new List<FileSpec>(FilesToBundle.Length);
             foreach (var item in FilesToBundle)
             {
                 fileSpec.Add(new FileSpec(sourcePath: item.ItemSpec, 
@@ -37,8 +54,7 @@ namespace Microsoft.NET.Build.Tasks
             }
 
             bundler.GenerateBundle(fileSpec);
-
-            //ExcludedFiles = FilesToBundle.Where(file => excludeSpec.Any(excludedFile => file.ItemSpec == excludedFile.SourcePath)).ToArray();
+            ExcludedFiles = FilesToBundle.Zip(fileSpec, (item, spec) => (spec.Excluded) ? item : null).Where(x => x != null).ToArray();
         }
     }
 }
