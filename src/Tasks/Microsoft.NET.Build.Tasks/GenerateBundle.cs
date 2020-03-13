@@ -37,11 +37,11 @@ namespace Microsoft.NET.Build.Tasks
         protected override void ExecuteCore()
         {
             OSPlatform targetOS = RuntimeIdentifier.StartsWith("win") ? OSPlatform.Windows :
-                                  RuntimeIdentifier.StartsWith("osx") ? OSPlatform.Linux : OSPlatform.OSX;
+                                  RuntimeIdentifier.StartsWith("osx") ? OSPlatform.OSX : OSPlatform.Linux ;
 
             BundleOptions options = BundleOptions.None;
-            options |= IncludeAllContent ? BundleOptions.BundleAllContent : BundleOptions.None;
             options |= IncludeNativeLibraries ? BundleOptions.BundleNativeBinaries : BundleOptions.None;
+            options |= IncludeAllContent ? BundleOptions.BundleAllContent : BundleOptions.None;
             options |= IncludeSymbols ? BundleOptions.BundleSymbolFiles : BundleOptions.None;
 
             var bundler = new Bundler(AppHostName, OutputDir, options, targetOS, new Version(TargetFrameworkVersion), ShowDiagnosticOutput);
