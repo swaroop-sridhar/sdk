@@ -961,8 +961,8 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PropertyGroup>
       <TraceSingleFileBundler Condition="'$(TraceSingleFileBundler)' == ''">false</TraceSingleFileBundler>
       <IncludeSymbolsInSingleFile Condition="'$(IncludeSymbolsInSingleFile)' == ''">false</IncludeSymbolsInSingleFile>
-      <IncludeNativeLibrariesInSingleFile Condition="'$(IncludeSymbolsInSingleFile)' == ''">false</IncludeNativeLibrariesInSingleFile>
-      <IncludeAllContentInSingleFile Condition="'$(IncludeSymbolsInSingleFile)' == ''">false</IncludeAllContentInSingleFile>
+      <IncludeNativeLibrariesInSingleFile Condition="'$(IncludeNativeLibrariesInSingleFile)' == ''">false</IncludeNativeLibrariesInSingleFile>
+      <IncludeAllContentInSingleFile Condition="'$(IncludeAllContentInSingleFile)' == ''">false</IncludeAllContentInSingleFile>
     </PropertyGroup>
     <GenerateBundle FilesToBundle="@(_FilesToBundle)"
                     AppHostName="$(PublishedSingleFileName)"
