@@ -325,9 +325,9 @@ namespace Microsoft.NET.Build.Tasks
                 {
                     string runtimePackName = runtimePackNamePattern.Replace("**RID**", runtimePackRuntimeIdentifier);
 
+                    TaskItem runtimePackItem = new TaskItem(runtimePackName);
                     if (runtimePacks != null)
                     {
-                        TaskItem runtimePackItem = new TaskItem(runtimePackName);
                         runtimePackItem.SetMetadata(MetadataKeys.NuGetPackageId, runtimePackName);
                         runtimePackItem.SetMetadata(MetadataKeys.NuGetPackageVersion, runtimePackVersion);
                         runtimePackItem.SetMetadata(MetadataKeys.FrameworkName, knownFrameworkReference.Name);
@@ -337,10 +337,25 @@ namespace Microsoft.NET.Build.Tasks
                         runtimePacks.Add(runtimePackItem);
                     }
 
-                    TaskItem packageToDownload = new TaskItem(runtimePackName);
-                    packageToDownload.SetMetadata(MetadataKeys.Version, runtimePackVersion);
+                    string runtimePackPath = null;
+                    if (!string.IsNullOrEmpty(TargetingPackRoot))
+                    {
+                        runtimePackPath = Path.Combine(TargetingPackRoot, runtimePackName, runtimePackVersion);
+                    }
+                    if (runtimePackPath != null && Directory.Exists(runtimePackPath))
+                    {
+                        // Use runtime pack from packs folder
+                        runtimePackItem.SetMetadata(MetadataKeys.PackageDirectory, runtimePackPath);
+                        runtimePackItem.SetMetadata(MetadataKeys.Path, runtimePackPath);
+                    }
+                    else
+                    {
+                        TaskItem packageToDownload = new TaskItem(runtimePackName);
+                        packageToDownload.SetMetadata(MetadataKeys.Version, runtimePackVersion);
 
-                    packagesToDownload.Add(packageToDownload);
+                        packagesToDownload.Add(packageToDownload);
+                    }
+
                 }
             }
         }
