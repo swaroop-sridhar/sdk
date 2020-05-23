@@ -58,6 +58,9 @@ namespace Microsoft.NET.Build.Tasks
         public ITaskItem[] AppHost { get; set; }
 
         [Output]
+        public ITaskItem[] SingleFileHost { get; set; }
+
+        [Output]
         public ITaskItem[] ComHost { get; set; }
 
         [Output]
@@ -105,6 +108,20 @@ namespace Microsoft.NET.Build.Tasks
                 if (appHostItem != null)
                 {
                     AppHost = new ITaskItem[] { appHostItem };
+                }
+
+                var singlefileHostItem = GetHostItem(
+                    AppHostRuntimeIdentifier,
+                    knownAppHostPacksForTargetFramework,
+                    packagesToDownload,
+                    DotNetAppHostExecutableNameWithoutExtension,
+                    "SingleFileHost",
+                    isExecutable: true,
+                    errorIfNotFound: true);
+
+                if (singlefileHostItem != null)
+                {
+                    SingleFileHost = new ITaskItem[] { singlefileHostItem };
                 }
 
                 var comHostItem = GetHostItem(

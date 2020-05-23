@@ -104,6 +104,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
       <Output TaskParameter="PackagesToDownload" ItemName="_PackageToDownload" />
       <Output TaskParameter="AppHost" ItemName="AppHostPack" />
+      <Output TaskParameter="SingleFileHost" ItemName="SingleFileHostPack" />
       <Output TaskParameter="ComHost" ItemName="ComHostPack" />
       <Output TaskParameter="IjwHost" ItemName="IjwHostPack" />
       <Output TaskParameter="PackAsToolShimAppHostPacks" ItemName="PackAsToolShimAppHostPack" />
@@ -181,6 +182,14 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <GetPackageDirectory
       Items="@(AppHostPack)"
+      PackageFolders="@(AssetsFilePackageFolder)">
+
+      <Output TaskParameter="Output" ItemName="ResolvedAppHostPack" />
+
+    </GetPackageDirectory>
+
+    <GetPackageDirectory
+      Items="@(SingleFileHostPack)"
       PackageFolders="@(AssetsFilePackageFolder)">
 
       <Output TaskParameter="Output" ItemName="ResolvedAppHostPack" />
